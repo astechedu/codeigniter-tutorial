@@ -1,0 +1,260 @@
+
+-------------------------------------------------------------------
+
+Migrations :
+-----------
+
+
+Migration CMDs:
+
+     php spark migrate
+     php spark migrate --all
+     php spark migrate:status
+     php spark migrate:rollback
+     php spart migrate:refresh
+     php spark make:migration Product
+     php spark make:seeder Product
+     php spark db:seed 
+
+
+--------------------------------------------------------------------
+
+
+CREATE TABLE users (
+     id int(5) unsigned NOT NULL AUTO_INCREMENT,
+     name varchar(100) NOT NULL,
+     email varchar(100) NOT NULL,
+     updated_at datetime DEFAULT NULL,
+     created_at datetime DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (id),
+     UNIQUE KEY email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE products (
+     id int(5) unsigned NOT NULL AUTO_INCREMENT,
+     name varchar(100) NOT NULL,
+     description text,
+     amount int(5) unsigned NOT NULL,
+     status int(5) NOT NULL DEFAULT '1',
+     updated_at datetime DEFAULT NULL,
+     created_at datetime DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--------------------------------------------------------------
+
+
+//app/Database/Migrations
+
+1. Employee Migration:
+   ------------------
+
+
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class Employee extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type'           => 'INT',
+                'constraint'     => 5,
+                'unsigned'       => true,
+                'auto_increment' => true,
+            ],
+            'name' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+            ],
+            'address' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],                        
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('employees');
+    }
+
+    public function down()
+    {
+         $this->forge->dropTable('employees');
+    }
+}
+
+---------------------------------------------------------------
+
+2. Product Migration:
+
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class Product extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type'           => 'INT',
+                'constraint'     => 5,
+                'unsigned'       => true,
+                'auto_increment' => true,
+            ],
+            'name' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+            ],
+            'amount' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'null' => false,
+            ],
+            'status' => [
+                'type' => 'INT',
+                'constraint' => 1,
+                'null' => false,
+            ],  
+            'description' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],                      
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],                        
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('products');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('products');
+    }
+}
+
+
+
+
+--------------------------------------------------------------------
+
+
+Seeder: 
+
+
+1. Employee Seeder:
+   ---------------
+
+<?php
+
+namespace App\Database\Seeds;
+
+use CodeIgniter\Database\Seeder;
+use Faker\Factory;
+
+class Employee extends Seeder
+{
+    public function run()
+    {
+
+        for ($i = 0; $i < 10; $i++) { 
+            //to add 10 users. Change limit as desired
+            $this->db->table('employees')->insert($this->generateUsers());
+        }
+
+        // Simple Queries
+        //$this->db->query('INSERT INTO students (name, address) //VALUES(:username:, :email:)', $data);
+
+        // Using Query Builder
+        //$this->db->table('students')->insert($data);
+
+    }
+
+       private function generateUsers(): array
+       {
+            $faker = Factory::create();
+            return [
+                'name' => $faker->name(),
+                'address' => $faker->email
+            ];
+        }
+
+}
+
+------------------------------------------------------------------
+
+
+2. Product Seeder :
+   ---------------
+
+
+<?php
+
+namespace App\Database\Seeds;
+
+use CodeIgniter\Database\Seeder;
+use Faker\Factory;
+
+class Product extends Seeder
+{
+    public function run()
+    {
+        for ($i = 0; $i < 10; $i++) { 
+            //to add 10 products. Change limit as desired
+            $this->db->table('products')->insert($this->generateProducts());
+        }
+    }
+
+    private function generateProducts(): array
+    {
+        $faker = Factory::create();
+        return [
+            'name' => $faker->name,
+            'description' => $faker->sentence(6),
+            'amount' => $faker->numberBetween(50, 200),
+            'status' => $faker->randomElement([1, 0])
+        ];
+    }
+}
+
+
+---------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------
+
+
+
+
+
+
+
