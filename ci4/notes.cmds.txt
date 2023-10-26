@@ -1,4 +1,3 @@
-
 -------------------------------------------------------------------
 
 Migrations :
@@ -159,6 +158,10 @@ class Product extends Migration
 
 
 
+//$this->addForeignKey('id','users','user_id','NULL','NULL');
+//$this->forge->ForeignKey('users','user_id');
+
+
 --------------------------------------------------------------------
 
 
@@ -244,8 +247,11 @@ class Product extends Seeder
 ---------------------------------------------------------------------
 
 
+$this->db->table('products')->insert($data);
+$this->db->table('products')->insert($users);
+$this->db->table('products')->insert($this->generateProducts());
 
-
+----------------------------------------------------------------------
 
 
 
@@ -255,8 +261,91 @@ class Product extends Seeder
 --------------------------------------------------------------
 
 
+Database Seeders: 
+----------------
+
+<?php
+
+namespace App\Database\Seeds;
+
+use CodeIgniter\Database\Seeder;
+use Faker\Factory;
+
+class SimpleSeeder extends Seeder
+{
+    public function run()
+    {
+
+      $data = [
+          'username' => 'darth',
+          'email' => 'darth@theemprice.com',
+
+      ]    
+
+        // Simple Queries
+        //$this->db->query('INSERT INTO students (name, address) //VALUES(:username:, :email:)', $data);
+
+        // Using Query Builder
+        //$this->db->table('students')->insert($data);
+
+    }
+}
+
+------------------------------------------------------------
 
 
+Nesting Seeder:-
+--------------
+
+namespace App\Database\Seeds;
+
+use CodeIgniter\Database\Seeder;
 
 
+class TextSeeder extends Seeder
+{
+    public function run()
+    {
+      $this->call('UserSeeder');
+      $this->call('ProductSeeder');
+      $this->call('EmployeeSeeder');
+      //$this->call('My\Database\Seeds\CountrySeeder');
+    }
+}
 
+------------------------------------------------------------
+
+
+Using Seeders: 
+-------------
+
+<?php
+
+$seeder = \Config\Database::seeder();
+$seeder->call('TestSeeder');
+
+
+--------------------------------------------------------------
+
+
+Command Line Seeding: 
+
+
+php spark db:seed TestSeeder
+
+
+Creating Seeder Files: 
+
+php spark make:seeder user --suffix
+
+
+For Unix: 
+
+   php spark make:seeder Myseeder --namespace Acme\\Blog
+
+For Windows:
+
+   php spark make:seeder Myseeder --namespace Acme\\Blog
+
+
+---------------------------------------------------------------
