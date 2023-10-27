@@ -12,6 +12,10 @@ Migration CMDs:
      php spark migrate:rollback
      php spart migrate:refresh
      php spark make:migration Product
+
+
+Seeding: 
+
      php spark make:seeder Product
      php spark db:seed 
 
@@ -172,7 +176,7 @@ Seeder:
         'name'=>'ajay', 'description' => 'This is description'
      ];
 
-     //
+     //Query 
      $this->db->query('insert into users(username, email) values(:username, :email)',$data);
 
      //Using query builder
